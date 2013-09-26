@@ -25,7 +25,6 @@ pip-log.txt
 .coverage
 .tox
 nosetests.xml
-natural-language-processing/hw1/*.gz
 
 # Translations
 *.mo
