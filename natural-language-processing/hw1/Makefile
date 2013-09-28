@@ -29,7 +29,7 @@ bin:
 	awk '{if ($$2 >= 2) print $$1}' | gzip > $@
 
 %.lm-with-vocab.gz: %.gz %.vocab.gz
-	ngram-count -text $< -vocab $*.vocab.gz -lm $@ 
+	ngram-count -unk -text $< -vocab $*.vocab.gz -lm $@ 
 
 %.ppl-with-vocab.gz: %.lm-with-vocab.gz ${TEST_FILE}
 	ngram -unk -lm $< -ppl ${TEST_FILE}
