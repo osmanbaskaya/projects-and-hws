@@ -17,4 +17,5 @@ for line in sys.stdin:
 ppls = np.array(ppls)
 ppls1 = np.array(ppls1)
 
-print ppls.mean(), ppls.std()
+print "ppl:", ppls.mean(), ppls.std()
+print "ppl1:", ppls1.mean(), ppls1.std()
