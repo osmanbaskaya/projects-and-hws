@@ -28,11 +28,21 @@ bin:
 	zcat $< | ngram-count -write-order 1 -text - -write - | \
 	awk '{if ($$2 >= 2) print $$1}' | gzip > $@
 
+combined.vocab.gz: wsj.gz brown.gz
+	zcat $^ | ngram-count -write-order 1 -text - -write - | \
+	awk '{if ($$2 >= 2) print $$1}' | gzip > $@
+
+%.lm-combined.gz: %.gz combined.vocab.gz
+	ngram-count -unk -text $< -vocab combined.vocab.gz -lm $@ 
+
 %.lm-with-vocab.gz: %.gz %.vocab.gz
 	ngram-count -unk -text $< -vocab $*.vocab.gz -lm $@ 
 
 %.ppl-with-vocab.gz: %.lm-with-vocab.gz ${TEST_FILE}
 	ngram -unk -lm $< -ppl ${TEST_FILE}
+
+%.ppl-combined.gz: %.lm-combined.gz ${TEST_FILE}
+	ngram -unk -lm $< -ppl ${TEST_FILE} -debug 2 
 
 %.sampling: %.gz
 	bootstrap.py -i $< -s ${SEED} | gzip > $*.sampled${SAMPLE_N}.gz
