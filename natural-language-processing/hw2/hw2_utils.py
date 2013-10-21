@@ -13,7 +13,7 @@ def fetch_fnames(path, folder):
 
 def sample_data(data, seed_val=1, percentage=0.2):
     seed(seed_val)
-    m = int(len(data) / (percentage * 100))
+    m = int(len(data) * percentage)
     shuffle(data)
     return data[:m], data[m:]
 

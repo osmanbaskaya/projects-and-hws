@@ -29,9 +29,9 @@ class NaiveBayesClassifier(object):
         # X -> training data, y -> labels (gold tags)
         print >> sys.stderr, "Training started"
         for x, cls in izip(X, y):
+            self.class_param[cls] += 1
             for w in x:
                 if w not in self.stoplist:
-                    self.class_param[cls] += 1
                     self.word_param[cls][w] += 1
         
         self._transform_to_logprob()
@@ -39,12 +39,19 @@ class NaiveBayesClassifier(object):
         print >> sys.stderr, "Training finished"
 
     def _transform_to_logprob(self):
+        
         for c in self.word_param:
+            denominator = sum(self.word_param[c].values())
             for word, count in self.word_param[c].iteritems():
                 try: 
-                    self.word_param[c][word] = log(count / self.class_param[c])
+                    self.word_param[c][word] = log(count / denominator)
                 except ValueError:
                     print >> sys.stderr, count, self.class_param[c]
+
+        denominator = sum(self.class_param.values())
+        print denominator
+        for c in self.class_param:
+            self.class_param[c] = log(self.class_param[c] / denominator)
 
     def predict(self, x):
         result = dd(int)
