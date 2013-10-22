@@ -21,9 +21,10 @@ class NaiveBayesClassifier(object):
         
         self.name = "Naive Bayes Classifier"
         self.alpha = alpha
-        self.word_param = dd(lambda: dd(lambda: 1))
+        self.word_param = dd(lambda: dd(lambda: alpha))
         self.class_param = dd(int)
         self.stoplist = stoplist
+        self.unseen = {}
 
     def fit(self, X, y):
         # X -> training data, y -> labels (gold tags)
@@ -34,24 +35,36 @@ class NaiveBayesClassifier(object):
                 if w not in self.stoplist:
                     self.word_param[cls][w] += 1
         
+        self._transform_to_prob()
         self._transform_to_logprob()
 
         print >> sys.stderr, "Training finished"
 
-    def _transform_to_logprob(self):
+    def _transform_to_prob(self):
         
         for c in self.word_param:
             denominator = sum(self.word_param[c].values())
+            # Unseen word prob assignment
+            self.unseen[c] = 1. / denominator 
             for word, count in self.word_param[c].iteritems():
                 try: 
-                    self.word_param[c][word] = log(count / denominator)
+                    self.word_param[c][word] = count / denominator
                 except ValueError:
                     print >> sys.stderr, count, self.class_param[c]
 
+
         denominator = sum(self.class_param.values())
-        print denominator
         for c in self.class_param:
-            self.class_param[c] = log(self.class_param[c] / denominator)
+            self.class_param[c] = self.class_param[c] / denominator
+
+    def _transform_to_logprob(self):
+
+        for c in self.word_param:
+            self.class_param[c] = log(self.class_param[c])
+            self.unseen[c] = log(self.unseen[c]) 
+            for word, prob in self.word_param[c].iteritems():
+                self.word_param[c][word] = log(prob)
+
 
     def predict(self, x):
         result = dd(int)
@@ -59,7 +72,10 @@ class NaiveBayesClassifier(object):
             result[c] += self.class_param[c] # class prior
             for w in x:
                 if w not in self.stoplist:
-                    result[c] += self.word_param[c][w]
+                    if w in self.word_param[c]:
+                        result[c] += self.word_param[c][w]
+                    else:
+                        result[c] += self.unseen[c]
         max_cls, max_val = max(result.iteritems(), key=lambda x: x[1])
         return max_cls, max_val
 
@@ -87,7 +103,6 @@ def main():
     clf = NaiveBayesClassifier()
     clf.fit(X_train, y_train)
     print clf.score(X_test, y_test)
-    
 
 if __name__ == '__main__':
     main()
