@@ -14,6 +14,9 @@ __author__ = "Osman Baskaya"
 if len(sys.argv) != 2:
     print >> sys.stderr, "Usage: {} seed".format(sys.argv[0])
 
+
+UNK = "<unk>" # unknown word label
+
 class NaiveBayesClassifier(object):
     
     def __init__(self, alpha=1, stoplist=set()):
@@ -34,6 +37,8 @@ class NaiveBayesClassifier(object):
             for w in x:
                 if w not in self.stoplist:
                     self.word_param[cls][w] += 1
+
+            self.word_param[cls][UNK] = 1
         
         self._transform_to_prob()
         self._transform_to_logprob()
@@ -45,7 +50,6 @@ class NaiveBayesClassifier(object):
         for c in self.word_param:
             denominator = sum(self.word_param[c].values())
             # Unseen word prob assignment
-            self.unseen[c] = 1. / denominator 
             for word, count in self.word_param[c].iteritems():
                 try: 
                     self.word_param[c][word] = count / denominator
@@ -61,7 +65,6 @@ class NaiveBayesClassifier(object):
 
         for c in self.word_param:
             self.class_param[c] = log(self.class_param[c])
-            self.unseen[c] = log(self.unseen[c]) 
             for word, prob in self.word_param[c].iteritems():
                 self.word_param[c][word] = log(prob)
 
@@ -72,10 +75,10 @@ class NaiveBayesClassifier(object):
             result[c] += self.class_param[c] # class prior
             for w in x:
                 if w not in self.stoplist:
-                    if w in self.word_param[c]:
+                    if w in self.word_param[c]: 
                         result[c] += self.word_param[c][w]
                     else:
-                        result[c] += self.unseen[c]
+                        result[c] += self.word_param[c][UNK] # w is OOV word
         max_cls, max_val = max(result.iteritems(), key=lambda x: x[1])
         return max_cls, max_val
 
@@ -92,7 +95,7 @@ def main():
     seed = sys.argv[1] 
     data_path = "reviews/"
 
-    split_percentage = 0.2
+    split_percentage = 0.20
     test_files, train_files = sample_data(fetch_fnames(data_path, 'pos') +
                                           fetch_fnames(data_path, 'neg'), 
                                           seed, split_percentage)
@@ -102,7 +105,9 @@ def main():
 
     clf = NaiveBayesClassifier()
     clf.fit(X_train, y_train)
-    print clf.score(X_test, y_test)
+    print sum(clf.word_param['p'].values())
+    print "Score is: %.6f" % clf.score(X_test, y_test)
+    print sum(clf.word_param['p'].values())
 
 if __name__ == '__main__':
     main()
