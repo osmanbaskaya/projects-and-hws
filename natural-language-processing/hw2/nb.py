@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 import sys
-from hw2_utils import fetch_fnames, sample_data, create_data
+from hw2_utils import fetch_fnames, sample_data, create_data, write_filenames
 from collections import defaultdict as dd
 from math import log
 from itertools import izip
@@ -100,18 +100,18 @@ def main():
                                           fetch_fnames(data_path, 'neg'), 
                                           seed, split_percentage)
 
+    write_filenames(test_files, seed, "test")
+    write_filenames(train_files, seed, "train")
+    
     X_train, y_train = create_data(train_files)
     X_test, y_test = create_data(test_files)
 
+
     clf = NaiveBayesClassifier()
     clf.fit(X_train, y_train)
-    print sum(clf.word_param['p'].values())
-    print "Score is: %.6f" % clf.score(X_test, y_test)
-    print sum(clf.word_param['p'].values())
+    print clf.score(X_test, y_test)
 
 if __name__ == '__main__':
     main()
-
-
 
 

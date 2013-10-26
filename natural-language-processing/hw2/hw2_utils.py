@@ -4,6 +4,7 @@
 __author__ = "Osman Baskaya"
 
 import os
+#importc sys
 from random import seed, shuffle
 
 
@@ -30,4 +31,7 @@ def create_data(files):
 
     return X, y
     
-
+def write_filenames(files, seed, typ):
+    with open('{}.sample{}.txt'.format(typ, seed), 'w') as f:
+        for fn in files:
+            f.write("{}\t{}\n".format(fn[0], fn[1]))
