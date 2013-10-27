@@ -145,8 +145,8 @@ clf.fit(X_train, y_train)  # training
 print "Fitting done"
 
 test_reviews, y_test = get_reviews_labels(test_file)
-feature_list = [(get_trigrams, (train_reviews,)), 
-                (get_review_length, (train_reviews,)),
+feature_list = [(get_trigrams, (test_reviews,)), 
+                (get_review_length, (test_reviews,)),
                 (get_keywords_features, (test_reviews, y_test, 'test', 'p', pos_kw)),
                 (get_keywords_features, (test_reviews, y_test, 'test', 'n', neg_kw)),
               ]
