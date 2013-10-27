@@ -30,6 +30,16 @@ def create_data(files):
     assert len(X) == len(y)
 
     return X, y
+
+def create_X_data(files):
+    """ files X """
+    X = []
+    for f in files:
+        words = open(f).read().split()
+        X.append(words)
+
+    return X
+    
     
 def write_filenames(files, seed, typ):
     with open('{}.sample{}.txt'.format(typ, seed), 'w') as f:
