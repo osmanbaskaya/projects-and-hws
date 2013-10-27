@@ -56,7 +56,7 @@ def get_keywords_features(reviews, labels, set_typ, rev_typ, keywords):
                 for k in keywords:
                     if k in review:
                         count += 1
-            features.append({'keywords_feature': count})
+            features.append({rev_typ + 'keywords_feature': count})
     elif set_typ == 'test':
         for review in X:
             count = 0
@@ -64,7 +64,7 @@ def get_keywords_features(reviews, labels, set_typ, rev_typ, keywords):
             for k in keywords:
                 if k in review:
                     count += 1
-            features.append({'keywords_feature': count})
+            features.append({rev_typ + 'keywords_feature': count})
 
     return features
     
@@ -126,7 +126,8 @@ def get_reviews_labels(review_files):
 pos_kw = ['oscar', 'winner', 'excellent', 'perfect', 'best']
 neg_kw = ['shit', 'hate', 'disaster', 'awful', 'mess', 'stinks']
 train_reviews, y_train = get_reviews_labels(train_file)
-feature_list = [(get_trigrams, (train_reviews,)), 
+feature_list = [
+                (get_trigrams, (train_reviews,)), 
                 (get_review_length, (train_reviews,)),
                 (get_keywords_features, (train_reviews, y_train, 'train', 'p', pos_kw)),
                 (get_keywords_features, (train_reviews, y_train, 'train', 'n', neg_kw)),
@@ -145,7 +146,8 @@ clf.fit(X_train, y_train)  # training
 print "Fitting done"
 
 test_reviews, y_test = get_reviews_labels(test_file)
-feature_list = [(get_trigrams, (test_reviews,)), 
+feature_list = [
+                (get_trigrams, (test_reviews,)), 
                 (get_review_length, (test_reviews,)),
                 (get_keywords_features, (test_reviews, y_test, 'test', 'p', pos_kw)),
                 (get_keywords_features, (test_reviews, y_test, 'test', 'n', neg_kw)),
