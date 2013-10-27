@@ -99,7 +99,7 @@ def get_trigrams(reviews):
 def create_features(func_list):
     X = []
     for func, args in func_list:
-        print "Feature func: {} called".format(func)
+        #print "Feature func: {} called".format(func)
         features = func(*args)
         if len(X) == 0:
             X = features
@@ -130,36 +130,36 @@ feature_list = [
                 (get_trigrams, (train_reviews,)), 
                 (get_review_length, (train_reviews,)),
                 (get_keywords_features, (train_reviews, y_train, 'train', 'p', pos_kw)),
-                (get_keywords_features, (train_reviews, y_train, 'train', 'n', neg_kw)),
+                #(get_keywords_features, (train_reviews, y_train, 'train', 'n', neg_kw)),
               ]
 #feature_list = [get_keywords_positive_features, get_review_length]
 train_features = create_features(feature_list)
 vectorizer = DictVectorizer()
 X_train = vectorizer.fit_transform(train_features)
-print "training features are created"
-print "X_train shape", X_train.shape
+#print "training features are created"
+#print "X_train shape", X_train.shape
 X_train = skale(X_train)
-print "Training - Scaling done"
+#print "Training - Scaling done"
 
 clf = LogisticRegression(C=1) # creation
 clf.fit(X_train, y_train)  # training 
-print "Fitting done"
+#print "Fitting done"
 
 test_reviews, y_test = get_reviews_labels(test_file)
 feature_list = [
                 (get_trigrams, (test_reviews,)), 
                 (get_review_length, (test_reviews,)),
                 (get_keywords_features, (test_reviews, y_test, 'test', 'p', pos_kw)),
-                (get_keywords_features, (test_reviews, y_test, 'test', 'n', neg_kw)),
+                #(get_keywords_features, (test_reviews, y_test, 'test', 'n', neg_kw)),
               ]
 test_features = create_features(feature_list)
 X_test = vectorizer.transform(test_features)
-print "test features are created"
+#print "test features are created"
 X_test = skale(X_test)
-print "Test - Skaling Done"
+#print "Test - Skaling Done"
 
 score = clf.score(X_test, y_test)
-print score
+print score, ","
 
 #X_test, y_test = create_features() 
 #score = clf.score() # get the score
