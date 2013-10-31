@@ -55,4 +55,5 @@ lm.sample%:
 lm.sample.scores:
 	for i in 1 2 3 4 5; do make lm.sample$$i; done > $@
 
-
+logistic.sample.score:
+	for i in 1 2 3 4 5; do logistic.py train.neg.lm$$i.gz train.pos.lm$$i.gz train.sample$$i.txt test.sample$$i.txt; done
