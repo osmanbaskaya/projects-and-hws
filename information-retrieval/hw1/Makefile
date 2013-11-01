@@ -28,4 +28,8 @@ omit-proportion: alice.freq.txt
 	cat $< | awk -F' ' '{if ($$2 > 4) print $$0}' | \
 	awk -F' ' 'BEGIN{sum=0}{sum=sum+$$2}END{print sum}'
 
+omit-proportion-vocab: alice.freq.txt
+	cat $< | awk -F' ' '{if ($$2 > 4) print $$0}' | \
+	wc -l
+
 .SECONDARY:
