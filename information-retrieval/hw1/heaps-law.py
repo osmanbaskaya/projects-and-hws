@@ -35,15 +35,17 @@ def main():
         result = calc_proportion(num_token, beta, proportion)
         print result / float(num_token), result
     elif question_part == 'b':
-        sample_size = 100
+        sample_size = 1
         x = []
         y = []
-        for i in range(sample_size, num_token+sample_size, 100):
+        for i in range(sample_size, num_token+sample_size, sample_size):
             xi, yi = calc_parameters(text[0:i])
             x.append(xi)
             y.append(yi)
         x = np.array(x)
         y = np.array(y)
+        print x
+        print y
         x = np.log(x)
         y = np.log(y)
         n = len(x)
@@ -52,7 +54,7 @@ def main():
         b = (y_mean * np.dot(x,x) - (x_mean * np.dot(x, y))) \
                                 / (np.dot(x, x) - (n * x_mean**2))
         m = (np.dot(x, y) - (n * x_mean * y_mean)) / (np.dot(x, x) - (n * x_mean**2))
-        lin_x = np.linspace(4, 11, 100)
+        lin_x = np.linspace(1, 11, 100)
         lin_y = (m * lin_x) + b
         plt.plot(lin_x, lin_y, '-')
         plt.xlabel("number of words")

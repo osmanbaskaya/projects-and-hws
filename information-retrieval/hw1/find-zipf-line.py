@@ -27,8 +27,6 @@ print m, b
 
 lin_x = np.linspace(0, 10, 100)
 lin_y = (m * lin_x) + b
-print lin_x
-print lin_y
 plt.plot(lin_x, lin_y, '-')
 plt.plot(x, y, "o")
 plt.show()
