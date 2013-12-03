@@ -42,7 +42,7 @@ combined.vocab.gz: wsj.gz brown.gz
 	ngram -unk -lm $< -ppl ${TEST_FILE}
 
 %.ppl-combined.gz: %.lm-combined.gz ${TEST_FILE}
-	ngram -unk -lm $< -ppl ${TEST_FILE} -debug 2 
+	ngram -unk -lm $< -ppl ${TEST_FILE}
 
 %.sampling: %.gz
 	bootstrap.py -i $< -s ${SEED} | gzip > $*.sampled${SAMPLE_N}.gz
