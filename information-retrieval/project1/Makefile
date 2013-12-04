@@ -9,5 +9,5 @@ QUERY_FILE=project-files/desc.51-100.short
 STOP_FILE=project-files/stoplist.txt
 STEM_FILE=project-files/stem-classes.txt
 
-tf-database-%.pkl: ${QUERY_FILE} ${STOP_FILE}
-	fetch.py $^ $* 1
+tf-database-%.pkl: ${QUERY_FILE} ${STOP_FILE} ${STEM_FILE}
+	fetch.py $^ $* 1 $@
