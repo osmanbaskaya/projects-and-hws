@@ -10,10 +10,17 @@ VALID_POS="NN NNS VBD IN NNP ."
 %.parsed.gz: wsj/%
 	treebank_parser.py $< | gzip > $@
 
-%.extract: %.parsed.gz
+%.tok.gz %.pos.gz: %.parsed.gz
 	zcat $< | ./extract.py $*
 
-%.filter: %.tok.gz %.pos.gz
+%.pos-filtered.gz %.tok-filtered.gz: %.tok.gz %.pos.gz
 	pos-filter.py $^ ${VALID_POS}
+
+%.vocab.gz: %.tok-filtered.gz
+	zcat $< | tr ' ' '\n' | sort | uniq | gzip > $@
+	zcat $@ | wc -l
+
+%.unknown.word: %.vocab.gz train.vocab.gz
+	vocab-intersect.py $^
 
 .SECONDARY:
