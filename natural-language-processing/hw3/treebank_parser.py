@@ -10,7 +10,9 @@ import sys
 import os
 import fnmatch
 import re
-import gzip
+
+#regex = re.compile("^\( *\((S|NP|X)")
+regex = re.compile("^\( *\(")
 
 
 if len(sys.argv) != 2:
@@ -41,17 +43,20 @@ def parse_mrg(files):
     whole = []
     for i, f in enumerate(files):
         sentence = []
+        #is_started = False
         for line in open(f):
-            if line.startswith("("):
+            if regex.match(line):
                 if len(sentence) != 0:
-                    whole.append(_format_parse(sentence))
+                    ss = _format_parse(sentence)
+                    whole.append(ss)
                     sentence = []
-            else:
-                match = re.findall("\([^()]* [^()]*\)", line)
-                if len(match) != 0:
-                    sentence.append(match)
+                #is_started = True
+            match = re.findall("\([^()]* [^()]*\)", line)
+            if len(match) != 0:
+                sentence.append(match)
         if len(sentence) != 0:
-            whole.append(_format_parse(sentence))
+            ss = _format_parse(sentence)
+            whole.append(ss)
     print >> sys.stderr, "{} sentences are processed (total)".format(len(whole))
     print >> sys.stderr, "{} files are processed (total)".format(i+1)
     return whole
