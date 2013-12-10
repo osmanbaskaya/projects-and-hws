@@ -35,7 +35,16 @@ VALID_POS="NN NNS VBD IN NNP ."
 mft-baseline.ans: train.mft.gz test.tok-filtered.gz
 	mft-baseline.py $^ | gzip > $@
 
+%.hmm.score: %.hmm.ans %.pos-filtered.gz
+	eval-pos-accuracy.py $^
+
 mft-baseline.score: mft-baseline.ans test.pos-filtered.gz
 	eval-pos-accuracy.py $^
+
+%.word-pos.counts.gz: %.tok-filtered.gz %.pos-filtered.gz
+	word-pos-count.py $^ | gzip > $@
+
+%.hmm.ans: train.ngram.gz train.word-pos.counts.gz %.tok-filtered.gz
+	hmm.py $^ ${VALID_POS} | gzip > $@
 
 .SECONDARY:
