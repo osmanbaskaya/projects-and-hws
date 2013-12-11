@@ -47,7 +47,8 @@ def fetch_details_from_lemur(word):
     page = page.read().split('\n')
 
     ctf, df = map(int, page[8].split())
-    return [line.split() for line in page[9:9+df]]
+    tt = [line.split() for line in page[9:9+df]]
+    return [(docid, int(doclen), int(tf)) for docid, doclen, tf in tt]
 
 def create_pkl_file(data, fn):
     
