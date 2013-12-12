@@ -48,7 +48,7 @@ def fetch_details_from_lemur(word):
 
     ctf, df = map(int, page[8].split())
     tt = [line.split() for line in page[9:9+df]]
-    return [(docid, int(doclen), int(tf)) for docid, doclen, tf in tt]
+    return [(docid, int(doclen), int(tf)) for docid, doclen, tf in tt], ctf
 
 def create_pkl_file(data, fn):
     
@@ -58,11 +58,12 @@ def preprocess_query(line, stemdict, stopset):
 
     if is_only_alpha_numeric:
         # removes all non-alphanumeric characters except whitespace
-        line = re.sub("[^a-zA-Z0-9\s]", "", line)
+        line = re.sub("[^a-zA-Z0-9\s]", " ", line)
 
     line = line.split()
-    query_id, line = line[0], line[1:]
-    print >> sys.stderr, "Processing: {}".format(query_id)
+    query_id, line = line[0], line[4:]
+    print >> sys.stderr, "Processing: {}".format(query_id),
+    print >> sys.stderr, "{}".format(line)
 
     preprocessed_words = []
     for word in line:
@@ -78,14 +79,16 @@ def preprocess_query(line, stemdict, stopset):
 def process_queries(stemdict, stopset):
     queries = {}
     d = {}
+    ctf_dict = {}
     for line in open(query_file):
+        #line = " ".join(line.split()[3:])
         query_id, words = preprocess_query(line, stemdict, stopset)
         queries[query_id] = words
         for word in words:
              if word not in d:
-                 d[word] = fetch_details_from_lemur(word)
-
-    return d, queries
+                 d[word], ctf = fetch_details_from_lemur(word)
+                 ctf_dict[word] = ctf
+    return d, queries, ctf_dict
 
 def main():
     stopset = None
@@ -98,8 +101,9 @@ def main():
         stemdict = get_stem_dict()
         stopset = get_stopset()
 
-    d, queries = process_queries(stemdict, stopset)
+    d, queries, ctf_dict = process_queries(stemdict, stopset)
     create_pkl_file(d, out_file_name)
     create_pkl_file(queries, "queries-" + out_file_name)
+    create_pkl_file(ctf_dict, "ctf-" + out_file_name)
 
 main()
