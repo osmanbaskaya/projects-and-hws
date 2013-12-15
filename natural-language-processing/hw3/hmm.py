@@ -3,7 +3,7 @@
 __author__ = "Osman Baskaya"
 
 """
-Hidden Markov Model is applied on Tagging Problem.
+Hidden Markov Model is applied on the tagging problem.
 
 Second order markov model is used to model joint distribution
 over word sequences and tag sequences p(x1, ..., xn | y1 ..., y(n+1))
@@ -13,7 +13,6 @@ over word sequences and tag sequences p(x1, ..., xn | y1 ..., y(n+1))
 
 import sys
 from collections import defaultdict as dd
-import random
 import gzip
 from itertools import product
 #from pprint import pprint
@@ -28,7 +27,16 @@ START_SENT_TAG = ('<s>', '<s>')
 STOP_SENT_TAG = "</s>"
 NGRAM = 3
 
-def laplace(count_dict, ss, eps=0.01):
+
+def is_valid_prob_dist(d, words, tags, eps=0.001):
+    total_error = 0
+    for word in words:
+        t = sum([d[(word, tag)] for tag in tags])
+        total_error += abs(t - 1)
+
+    return True if total_error <= eps else False
+
+def laplace(count_dict, ss, eps=1000):
     """ Laplace smoothing on the count_dict """
     for trigram in product(ss, repeat=NGRAM):
         count_dict[trigram] += eps
@@ -62,24 +70,46 @@ def prepare_q_from_counts(smoothing_method=None):
             m =  "Houston, I have a bad feeling about this mission."
             print >> sys.stderr, m
             exit(-1)
+
+    
     return q
 
 
+def jelinek_mercer(e, words, w, tags=valid_tags):
+    # w is the lambda parameter for jelinek mercer smoothing
+    num_tokens = float(sum(words.values()))
+    #print >> sys.stderr, words.keys()[0:5]
+    #print >> sys.stderr, words.values()[0:5]
+    #print >> sys.stderr, num_tokens, w
+    for word in words:
+        for tag in tags:
+            key = (word, tag)
+            e[key] = w * e[key] + (1 - w) * (words[word] / num_tokens) # unigram MLE
+
+    return e
+
 def prepare_e_from_counts(smoothing_method = None):
+    all_tags = list(valid_tags)
+    all_tags.extend(["<s>", "</s>"])
     wpc = dd(lambda: dd(int)) # wpc[word][pos] = count 
+    tags = dd(int)
+    words = dd(int)
     for line in e_file:
         line = line.split()
         word, pos, count = line[0], line[1], int(line[2])
         wpc[word][pos] += count
+        words[word] += count
+        tags[pos] += count
+
+    e = dd(lambda: 0)
+    for word, psos in wpc.viewitems(): # word, parts of speech
+        for p, c in psos.viewitems():
+            e[(word, p)] = c / float(tags[p])
     
     if smoothing_method is not None:
-        wpc = smoothing_method(wpc, all_tags) 
+        e = smoothing_method(e, words, 0.99, all_tags)
 
-    e = dd(lambda: 0.000000000001)
-    for word, psos in wpc.viewitems(): # word, parts of speech
-        wc = float(sum(psos.viewvalues()))
-        for p, c in psos.viewitems():
-            e[(word, p)] = c / wc
+    #assert is_valid_prob_dist(e, words, all_tags), "Not a valid probability distribution!"
     return e
 
 def e(word, tag):
@@ -91,7 +121,6 @@ def q(v, w, u):
     score = q_dict[(w, u, v)]
     if score == 0:
         print >> sys.stderr, w, u, v, score
-        exit()
     return score
 
 def init_tag_sets(k):
@@ -131,7 +160,7 @@ def decode(sentence):
         v, u = u, w
     return y[::-1] # reverse order
 
-e_dict = prepare_e_from_counts()
+e_dict = prepare_e_from_counts(jelinek_mercer)
 q_dict = prepare_q_from_counts(laplace)
 
 for sentence in sentences:
