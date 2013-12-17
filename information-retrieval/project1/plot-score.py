@@ -11,7 +11,9 @@ from matplotlib import pyplot as plt
 #from pprint import pprint
 from itertools import cycle
 
-files = map(open, sys.argv[1:])
+png_name = sys.argv[1]
+experiment_name = sys.argv[2]
+files = map(open, sys.argv[3:])
 
 
 def get_precisions(lines):
@@ -25,15 +27,19 @@ for f in files:
     exp = f.name.split('.')[0]
     lines = f.readlines()
     MAP, ll = get_precisions(lines)
-    scores[exp] = (MAP, ll)
+    scores[exp] = ll
 
 color = cycle("bgrcmykw")
 
 for exp, val in scores.viewitems():
+    print val
     x = [v[0] for v in val]
     y = [v[1] for v in val]
     plt.plot(x, y, '%s-' % color.next(), label=exp)
 
+plt.xlabel("Recall")
+plt.ylabel("Precision")
+plt.title(experiment_name)
 plt.legend()
-plt.show()
+plt.savefig(png_name)
 

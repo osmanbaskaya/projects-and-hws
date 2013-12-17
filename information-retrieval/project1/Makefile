@@ -68,5 +68,13 @@ generate.scores:
 	for i in 0 1 2 3; do echo bm25-database-$$i.score; done | xargs -n 1 -P 4 make &
 	wait
 
+raw-%.png: r-ans
+	cd $<; \
+	../plot-score.py $@ "Performance on Dataset$* (No Query Processing)" *-$*.score
+
+qp-%.png: qp-additional-ans
+	cd $<; \
+	../plot-score.py $@ "Performance on Dataset$* (Query pre-processed)" *-$*.score
+
 # Do not remove intermediate file.
 .SECONDARY:
