@@ -33,14 +33,13 @@ def _tf_func(tf, k, c, doc_length=1, avg_length=1):
     return tf / (tf + k + c * (doc_length / avg_length))
 
 def robertsons_tf(tf, doc_length, avg_length):
-    """ Answer 1: Implementation of Robertson's Score 
-    """
     return _tf_func(tf, 1, 0)
 
 def robertson_score(word, tf, doc_length, avg_length):
     return robertsons_tf(tf, doc_length, avg_length)
 
 def okapi_tf(tf, doc_length, avg_length):
+    """ Answer 1: Implementation of Robertson's Score """
     return _tf_func(tf, 0.5, 1.5, doc_length, avg_length)
 
 def get_idf(word):
@@ -49,7 +48,7 @@ def get_idf(word):
     if L == 0:
         idf = 0
     else:
-        idf = TOTAL_DOC / float(L)
+        idf = math.log(TOTAL_DOC / float(L))
     return idf
 
 def okapi_score(word, tf, doc_length, avg_length):
@@ -78,10 +77,7 @@ def score(query, score_func, N):
         for t in term_data.get(word, []):
             docid, doclen, tf = t
             #print >> sys.stderr, docid, doclen, tf
-            if docid != "15440":
-                continue
             s = score_func(word, tf, doclen, database_info[database]['avg']) 
-            print qtf, s, word
             ranking[docid] += (s * qtf)
     try:
         rr = sorted(ranking, key=lambda x: ranking[x], reverse=True)[:N]
@@ -113,6 +109,7 @@ score_func = globals()[sys.argv[4]]
 def get_system_score():
     for key in sorted(queries.keys(), key= lambda x: int(x)):
         query = queries[key]
+        query = " ".join(query).lower().split()
         print >> sys.stderr, key, query
         ranking = score(query, score_func, RETRIEVE)
         if len(ranking) < RETRIEVE:

@@ -113,6 +113,7 @@ def get_system_score():
     print >> sys.stderr, "Score funct: {}".format(score_func.func_name)
     for key in sorted(queries.keys(), key=lambda x: int(x)):
         query = queries[key]
+        query = " ".join(query).lower().split()
         #print >> sys.stderr, key, query
         ranking = score(query, score_func, RETRIEVE)
         output_scores(key, ranking, database)

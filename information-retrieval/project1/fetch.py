@@ -58,12 +58,10 @@ def preprocess_query(line, stemdict, stopset):
 
     if is_only_alpha_numeric:
         # removes all non-alphanumeric characters except whitespace
-        line = re.sub("[^a-zA-Z0-9\s]", " ", line)
+        line = re.sub("[^a-zA-Z0-9\s]", "", line)
 
     line = line.split()
-    query_id, line = line[0], line[4:]
-    print >> sys.stderr, "Processing: {}".format(query_id),
-    print >> sys.stderr, "{}".format(line)
+    query_id, line = line[0], line[1:]
 
     preprocessed_words = []
     for word in line:
@@ -84,6 +82,9 @@ def process_queries(stemdict, stopset):
         #line = " ".join(line.split()[3:])
         query_id, words = preprocess_query(line, stemdict, stopset)
         queries[query_id] = words
+        words = " ".join(words).lower().split()
+        print >> sys.stderr, "Processing: {}".format(query_id),
+        print >> sys.stderr, "{}".format(words)
         for word in words:
              if word not in d:
                  d[word], ctf = fetch_details_from_lemur(word)
