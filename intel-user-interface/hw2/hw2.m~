@@ -1,0 +1,25 @@
+clc; clear; close all;
+
+addpath('libsvm-3.18/matlab/');
+k = 5;
+
+%% Read data
+data = csvread('Input.txt');
+%data = data(1:10,:);
+
+%%  Shuffle the data
+rng(0) % Seed = 0
+ridx = randperm(length(data));
+data = data(ridx, :); % Shuffling the data
+
+
+%% Run LibSVM with different kernels and parameters
+
+linearSVM_params = '-s 0 -t 0 -c 1 -h 0';
+linear_accuracies = run(data, k, linearSVM_params);
+
+rbfSVM_params = '-s 0 -t 2 -c %d -h 0 -g %d';
+rbf_accuracies = run(data, k, rbfSVM_params);
+
+polySVM_params = '-s 0 -t 1 -c %d -h 0 -g %d';
+poly_accuracies = run(data, k, polySVM_params);
