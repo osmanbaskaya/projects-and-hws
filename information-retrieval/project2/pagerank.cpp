@@ -108,6 +108,11 @@ void process_input(ifstream &myfile) {
     }
     myfile.close();
     clean_sink();
+    cerr << "Number of pages: " << PAGES.size() << endl;
+    cerr << "Number of sink node: " << SINKS.size() << endl;
+    cerr << "Number of keys in M: " << IN_LINKS.size() << endl;
+    cerr << "Number of keys in L: " << OUT_LINKS.size() << endl;
+
     }
     else cout << "Unable to open file"; 
 }
@@ -129,7 +134,7 @@ map<string, double> page_rank_init(double d) {
   double prev_entropy = 0;
   //for (unsigned int i=0; i<100; i++) {
   cerr << setprecision(9);
-  while (converge_count <= 4) {
+  while (converge_count <= 4 and epoch != 100) {
     double sinkPR = 0;
     double e = entropy_score(PR);
 

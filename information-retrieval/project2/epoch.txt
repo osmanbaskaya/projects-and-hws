@@ -1,3 +1,7 @@
+Number of pages: 183811
+Number of sink node: 66175
+Number of keys in M: 183811
+Number of keys in L: 117636
 Reading done
 Epoch 0:	   183811
 Epoch 1:	79669.9232
@@ -99,16 +103,4 @@ Epoch 96:	67191.357
 Epoch 97:	67191.3565
 Epoch 98:	67191.3569
 Epoch 99:	67191.3566
-Epoch 100:	67191.3569
-Epoch 101:	67191.3566
-Epoch 102:	67191.3568
-Epoch 103:	67191.3567
-Epoch 104:	67191.3568
-Epoch 105:	67191.3567
-Epoch 106:	67191.3568
-Epoch 107:	67191.3567
-Epoch 108:	67191.3568
-Epoch 109:	67191.3567
-Epoch 110:	67191.3568
-Epoch 111:	67191.3567
 Pagerank Algorithm is converged
