@@ -1,0 +1,15 @@
+Linear	Test-Chunk:1	NumberOfSupportVector:952
+Linear	Test-Chunk:2	NumberOfSupportVector:956
+Linear	Test-Chunk:3	NumberOfSupportVector:960
+Linear	Test-Chunk:4	NumberOfSupportVector:960
+Linear	Test-Chunk:5	NumberOfSupportVector:963
+RBF	Test-Chunk:1	NumberOfSupportVector:300
+RBF	Test-Chunk:2	NumberOfSupportVector:328
+RBF	Test-Chunk:3	NumberOfSupportVector:264
+RBF	Test-Chunk:4	NumberOfSupportVector:302
+RBF	Test-Chunk:5	NumberOfSupportVector:316
+Polynomial	Test-Chunk:1	NumberOfSupportVector:752
+Polynomial	Test-Chunk:2	NumberOfSupportVector:774
+Polynomial	Test-Chunk:3	NumberOfSupportVector:757
+Polynomial	Test-Chunk:4	NumberOfSupportVector:783
+Polynomial	Test-Chunk:5	NumberOfSupportVector:816

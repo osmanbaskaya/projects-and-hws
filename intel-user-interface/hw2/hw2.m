@@ -11,16 +11,25 @@ data = csvread('Input.txt');
 rng(0) % Seed = 0
 ridx = randperm(length(data));
 data = data(ridx, :); % Shuffling the data
-data = data(1:150,:);
+%data = data(1:150,:);
+
+%% Normalization ?
+
+X = featureNormalize(data(:,1:end-1));
+data = [X, data(:,end)];
+
+
+%% Create a file for reporting the number of Support Vectors
+
+fileID = fopen('NumSupportVector.txt', 'w');
 
 %% Run LibSVM with different kernels and parameters
 
-%linearSVM_params = '-s 0 -t 0 -c %d -h 0 -g %d';
-%linear_accuracies = run(data, k, linearSVM_params, 'Linear');
+linearSVM_params = '-s 0 -t 0 -c %d -h 0 -g %d';
+linear_accuracies = run(data, k, linearSVM_params, 'Linear', fileID);
 
 rbfSVM_params = '-s 0 -t 2 -c %d -h 0 -g %d';
-rbf_accuracies = run(data, k, rbfSVM_params, 'RBF');
+rbf_accuracies = run(data, k, rbfSVM_params, 'RBF', fileID);
 
-%polySVM_params = '-s 0 -t 1 -c %d -h 0 -g %d';
-%poly_accuracies = run(data, k, polySVM_params, 'Polynomial');
-x = 1;
+polySVM_params = '-s 0 -t 1 -c %d -h 0 -g %d';
+poly_accuracies = run(data, k, polySVM_params, 'Polynomial', fileID);
