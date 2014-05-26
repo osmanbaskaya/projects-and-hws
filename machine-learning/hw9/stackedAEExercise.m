@@ -1,3 +1,5 @@
+LASTN = maxNumCompThreads(10);
+
 %% CS294A/CS294W Stacked Autoencoder Exercise
 
 %  Instructions
