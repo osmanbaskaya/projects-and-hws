@@ -1,0 +1,7 @@
+clear;
+load('spamData.mat');
+Xtrain1c = [ones(length(Xtrain),1) Xtrain>0];
+Xtest1c = [ones(length(Xtest),1) Xtest>0];
+
+Xtrain1c(find(ytrain),
+params1 = 
